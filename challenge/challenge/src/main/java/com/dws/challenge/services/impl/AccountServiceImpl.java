@@ -53,8 +53,14 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(accountFrom);
         accountRepository.save(accountTo);
 
-        // TODO: Notify account holders
-        notificationService.sendNotification(accountFromId, accountToId, amount);
-        notificationService.sendNotification(accountToId, accountFromId, amount);
+		// TODO: Notify account holders
+        sendNotifications(accountFrom, accountTo, amount);
     }
+	
+	 private void sendNotifications(Account accountFrom, Account accountTo, int amount) {
+		 notificationService.sendNotification(accountFrom.getId(),
+	            String.format("Transferred %d to account %s", amount, accountTo.getId()));
+	        notificationService.sendNotification(accountTo.getId(),
+	            String.format("Received %d from account %s", amount, accountFrom.getId()));
+	    }
 }

@@ -50,13 +50,15 @@ public class TransferController {
 	 *
 	 */
 	@PostMapping("/transfer")
-	public ResponseEntity<String> transferMoney(@RequestBody TransferRequest transferRequest) {
-		try {
-			accountService.transferMoney(transferRequest);
-			return ResponseEntity.ok("Transfer successful");
-		} catch (Exception e) {
-			LOGGER.error("Error in transfering money :: {}", e.getMessage());
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
-	}
+    public ResponseEntity<String> transferMoney(@RequestBody TransferRequest transferRequest) {
+        try {
+        	//if checkmarx or equivalent tool is there, we may need to sanitize the request object
+            accountService.transferMoney(transferRequest);
+            return new ResponseEntity<>("Transfer successful", HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
