@@ -1,25 +1,22 @@
-package com.dws.challenge.model;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+@RestController
+@RequestMapping("/api/accounts")
+public class TransferController {
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-@Builder
-@JsonSerialize
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-	"accountFromId",
-	"accountToId"
-	"amount"})
-public class TransferRequest {
-	private Long accountFromId;
-	private Long accountToId;
-	private double amount;
+    private final AccountService accountService;
+
+    @PostMapping("/transfer")
+    public ResponseEntity<String> transferMoney(@RequestBody TransferRequest transferRequest) {
+        try {
+            accountService.transferMoney(transferRequest);
+            return ResponseEntity.ok("Transfer successful");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
 }
