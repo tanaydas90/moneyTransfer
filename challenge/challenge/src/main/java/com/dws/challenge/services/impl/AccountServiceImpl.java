@@ -1,6 +1,7 @@
 package com.dws.challenge.services.impl;
 
 import com.dws.challenge.model.TransferRequest;
+import com.dws.challenge.model.Account;
 
 @Service
 public class AccountServiceImpl implements AccountService {
